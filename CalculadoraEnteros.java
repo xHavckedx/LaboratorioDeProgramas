@@ -5,51 +5,65 @@ import java.util.Scanner;
  * @author Leoca
  */
 public class CalculadoraEnteros {
-    public static void main (String[] args){
-    String hacer = "";
-    Scanner a = new Scanner(System.in);
-    Scanner b = new Scanner(System.in);
-    String continuar = "continuar";
     
-    while(continuar.equalsIgnoreCase("continuar")){ //Ejecutar el programa o salir
-        hacer=JOptionPane.showInputDialog("Que operación quieres realizar? Estan disponibles: Restar, multiplicar, sumar o divir.?"); //multiplicar, sumar, dividir, restar.
+    public static void main (String[] args){
         
-        if(hacer.equalsIgnoreCase("multiplicar")){
+    String sProcedimientoOperación = "";
+    Scanner scPrimerValor = new Scanner(System.in);
+    Scanner scSegundoValor = new Scanner(System.in);
+    String sContinuarParar = "continuar";
+    
+    while(sContinuarParar.equalsIgnoreCase("continuar")){ //Ejecutar el programa o salir
+        sProcedimientoOperación=JOptionPane.showInputDialog("Que operación quieres realizar? Estan disponibles: Restar, multiplicar, sumar o dividir.?"); //multiplicar, sumar, dividir, restar.
+        
+        if(sProcedimientoOperación.equalsIgnoreCase("multiplicar")){
+            
             System.out.println("ingrese el primer valor.");
-            int c=a.nextInt();
+            int iPrimerValor = scPrimerValor.nextInt();
             System.out.println("ingrese el segundo valor.");
-            int d=b.nextInt();
-            System.out.println(c*d);
-            continuar=JOptionPane.showInputDialog("Quieres continuar o salir?");
-        }
-        if(hacer.equalsIgnoreCase("dividir")){
+            int iSegundoValor = scSegundoValor.nextInt();
+            System.out.println(iPrimerValor * iSegundoValor);
+            
+            sContinuarParar = JOptionPane.showInputDialog("Quieres continuar o salir?");
+        
+        }else if(sProcedimientoOperación.equalsIgnoreCase("dividir")){
+            
             System.out.println("ingrese el primer valor.");
-            double c=a.nextInt();
-            System.out.println("ingrese el segundo valor.");            
-            double d=b.nextInt();
-            System.out.println(c/d);
-            continuar=JOptionPane.showInputDialog("Quieres continuar o salir?");
-        }
-        if(hacer.equalsIgnoreCase("sumar")){
-            System.out.println("ingrese el primer valor.");
-            int c=a.nextInt();
+            double dPrimerValor = scPrimerValor.nextInt();
             System.out.println("ingrese el segundo valor.");
-            int d=b.nextInt();
-            System.out.println(c+d);
-            continuar=JOptionPane.showInputDialog("Quieres continuar o salir?");
-            }
-        if(hacer.equalsIgnoreCase("restar")){
+            double dSegundoValor = scSegundoValor.nextInt();
+            System.out.println(dPrimerValor / dSegundoValor);
+            
+            sContinuarParar = JOptionPane.showInputDialog("Quieres continuar o salir?");
+        
+        }else if(sProcedimientoOperación.equalsIgnoreCase("sumar")){
+          
             System.out.println("ingrese el primer valor.");
-            int c=a.nextInt();
+            int iPrimerValor = scPrimerValor.nextInt();
             System.out.println("ingrese el segundo valor.");
-            int d=b.nextInt();
-            System.out.println(c-d);
-        continuar=JOptionPane.showInputDialog("Quieres continuar o salir?");
+            int iSegundoValor = scSegundoValor.nextInt();
+            System.out.println(iPrimerValor + iSegundoValor);
+            
+            sContinuarParar = JOptionPane.showInputDialog("Quieres continuar o salir?");
+            
+        }else if(sProcedimientoOperación.equalsIgnoreCase("restar")){
+          
+            System.out.println("ingrese el primer valor.");
+            int iPrimerValor = scPrimerValor.nextInt();
+            System.out.println("ingrese el segundo valor.");
+            int iSegundoValor = scSegundoValor.nextInt();
+            System.out.println(iPrimerValor - iSegundoValor);
+            
+            sContinuarParar = JOptionPane.showInputDialog("Quieres continuar o salir?");
+            
         }else{
+            
         System.out.println("Has decidido cerrar el programa.");
-        break; }
-  }if(continuar.equalsIgnoreCase("salir")){       
-   System.exit(0);
+        break; 
+        }
+        
+    }else(sContinuarParar.equalsIgnoreCase("salir")){       
+         System.exit(0);
     }
   }
 }
