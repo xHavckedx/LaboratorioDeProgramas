@@ -1,55 +1,66 @@
-#cs ----------------------------------------------------------------------------
+#cs ---------------------------------------------------------------------------------------------------------------------------------------
 
  AutoIt Version: 3.3.14.5
  Author:xHavkedx
 
- Función del script:Recolector de semillas y ingredientes 1x1
-	Template AutoIt script.
+ Función del script:Recolector de semillas y ingredientes 1x1(izq)(drch)
 
-#ce ----------------------------------------------------------------------------
+#ce ---------------------------------------------------------------------------------------------------------------------------------------
+
+;-----------------------------------------------------------Variables----------------------------------------------------------------------
+#include <MsgBoxConstants.au3>
+$bResolucion1920=False;cambia la resolución de 1920 a 1336
+$idelayRecoleccion = 1950;Delay de la recolección de cultivos.
+$scnResolucion = MsgBox(1,"Resolución","Si estas utilizando una resolución de 1920x1080, pulsa aceptar de lo contrario pulsa cancelar.")
+
+;-----------------------------------------------------------LLamadas------------------------------------------------------------------------
 HotKeySet("{1}","fncEmpezarScriptIzq");Empezar a la izquierda
 HotKeySet("{2}","fncPararScript");Pausar o reanudar programa
 HotKeySet("{3}","fncEmpezarScriptDrc");Empezar a la derecha
 HotKeySet("{4}","fncEndProg");Finalizar el programa
-HotKeySet("{F1}","fncResolucionPantalla1920x1080");Resolución 1920
-HotKeySet("{F2}","fncResolucionPantalla1366x768");Resolución 1360
 
-$bResolucion1920=False
-$bResolucion1366=False
-
-$idelayRecoleccion = 1950;Delay de la recolección de cultivos.
-
-WinActivate("Resolución")
-MsgBox (0,"Resolucion","Pulsa F1 para seleccionar la resolucion de pantalla 1920x1080. Pulsa F2 para seleccionar la resolucion 1366x768")
-
-Func fncResolucionPantalla1920x1080()
-EndFunc
-
+WinActivate("Acciones")
 MsgBox (0,"Acciones","Presiona 1 para iniciar la izquierda. Presiona 2 para pausar el programa. Presiona 3 para inicar a la derecha. Presiona4 para cerrar el programa.")
-ToolTip("1.Izquierda 2.Pausa 3.Derecha 4.Cerrar",753,178,"Pausado",1,1)
-	Sleep(5000)
-	ToolTip("")
+
 While 1
 	Sleep(100)
 WEnd
+
+;-----------------------------------------------------------Funciones-----------------------------------------------------------------------
 Func fncEmpezarScriptDrc() ;Función de ir hacia la Derecha
 	While 1
-		MouseClick("right",1021,515,1,3000)
-		sleep(700)
-		MouseClick("left",935,427,1,1000)
-		Sleep($idelayRecoleccion)
+		If $scnResolucion = 1 Then ;Resolución 1920
+			MouseClick("right",1021,515,1,3000)
+			sleep(700)
+			MouseClick("left",935,427,1,1000)
+			Sleep($idelayRecoleccion)
 
-		MouseClick("right",1021,515,1,3000)
-		sleep(700)
-		MouseClick("left",977,465,1,1000)
-		Sleep($idelayRecoleccion)
-		MouseClick("left",1022,573,1,1000)
-		sleep(1000)
+			MouseClick("right",1021,515,1,3000)
+			sleep(700)
+			MouseClick("left",977,465,1,1000)
+
+			Sleep($idelayRecoleccion)
+			MouseClick("left",1022,573,1,1000)
+			sleep(1000)
+
+		ElseIf $scnResolucion = 2 Then ;Resolución 1333
+			MouseClick("right",727,369,1,4000)
+			sleep(1000)
+			MouseClick("left",644,283,1,2000)
+			Sleep($idelayRecoleccion)
+
+			MouseClick("right",727,369,1,4000)
+			sleep(700)
+			MouseClick("left",686,313,1,2000)
+			Sleep($idelayRecoleccion)
+
+			MouseClick("left",729,410,1,1000)
+			sleep(1000)
+		EndIf
 	WEnd
 EndFunc
 
 Func fncPararScript() ;Función de pausa y comenzar
-	$Script = False
 	ToolTip("Pausado|Presiona 1 o 2 para reanudar el script",753,178,"Pausado",1,1)
 	Sleep(3000)
 	ToolTip("")
@@ -59,30 +70,44 @@ Func fncPararScript() ;Función de pausa y comenzar
 EndFunc ;EmpezarScript
 
 Func fncEmpezarScriptIzq() ;Función de ir hacia la Izquierda
-
 	While 1
-		MouseClick("right",1021,515,1,3000)
-		sleep(700)
-		MouseClick("left",935,427,1,1000)
-		Sleep($idelayRecoleccion)
+		If $scnResolucion = 1 Then ; Resolución 1920
+			MouseClick("right",1021,515,1,3000)
+			sleep(700)
+			MouseClick("left",935,427,1,1000)
+			Sleep($idelayRecoleccion)
 
-		MouseClick("right",1021,515,1,3000)
-		sleep(700)
-		MouseClick("left",977,465,1,1000)
-		Sleep($idelayRecoleccion)
-		MouseClick("left",906,515,1,1000)
-		sleep(1000)
+			MouseClick("right",1021,515,1,3000)
+			sleep(700)
+			MouseClick("left",977,465,1,1000)
+			Sleep($idelayRecoleccion)
+
+			MouseClick("left",906,515,1,1000)
+			sleep(1000)
+		ElseIf $scnResolucion = 2 Then ;Resolución 1333
+			MouseClick("right",727,369,1,4000)
+			sleep(1000)
+			MouseClick("left",644,283,1,2000)
+			Sleep($idelayRecoleccion)
+
+			MouseClick("right",727,369,1,4000)
+			sleep(700)
+			MouseClick("left",686,313,1,2000)
+			Sleep($idelayRecoleccion)
+
+			MouseClick("left",641,370,1,1000)
+			sleep(1000)
+		EndIf
 	WEnd
-
 EndFunc
-
-Func fncResolucionPantalla1366x768()
-	ToolTip ("prueba",753,178,"prueba",1,1)
-	Sleep(3000)
-	ToolTip("")
-EndFunc
-
 
 Func fncEndProg() ;Función de Parar
-	Exit
+$bSalir = MsgBox(1,"Salir","¿Quieres realmente salir del programa?.")
+		If $bSalir = 2 Then
+			While 1
+				Sleep(100)
+			WEnd
+		ElseIf $bSalir = 1 Then
+			Exit
+		EndIf
 EndFunc
