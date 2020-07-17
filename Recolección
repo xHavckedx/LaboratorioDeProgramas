@@ -19,8 +19,8 @@ HotKeySet("{2}","fncPararScript");Pausar o reanudar programa
 HotKeySet("{3}","fncEmpezarScriptDrc");Empezar a la derecha
 HotKeySet("{4}","fncEndProg");Finalizar el programa
 
-WinActivate("Acciones")
-MsgBox (0,"Acciones","Presiona 1 para iniciar la izquierda. Presiona 2 para pausar el programa. Presiona 3 para inicar a la derecha. Presiona4 para cerrar el programa.")
+WinActivate("Wakfu")
+ToolTip("Presiona 1 para iniciar la izquierda. Presiona 2 para pausar el programa. Presiona 3 para inicar a la derecha. Presiona4 para cerrar el programa.",300,0,"Acciones",1,0)
 
 While 1
 	Sleep(100)
