@@ -1,0 +1,88 @@
+#cs ----------------------------------------------------------------------------
+
+ AutoIt Version: 3.3.14.5
+ Author:xHavkedx
+
+ Función del script:Recolector de semillas y ingredientes 1x1
+	Template AutoIt script.
+
+#ce ----------------------------------------------------------------------------
+HotKeySet("{1}","fncEmpezarScriptIzq");Empezar a la izquierda
+HotKeySet("{2}","fncPararScript");Pausar o reanudar programa
+HotKeySet("{3}","fncEmpezarScriptDrc");Empezar a la derecha
+HotKeySet("{4}","fncEndProg");Finalizar el programa
+HotKeySet("{F1}","fncResolucionPantalla1920x1080");Resolución 1920
+HotKeySet("{F2}","fncResolucionPantalla1366x768");Resolución 1360
+
+$bResolucion1920=False
+$bResolucion1366=False
+
+$idelayRecoleccion = 1950;Delay de la recolección de cultivos.
+
+WinActivate("Resolución")
+MsgBox (0,"Resolucion","Pulsa F1 para seleccionar la resolucion de pantalla 1920x1080. Pulsa F2 para seleccionar la resolucion 1366x768")
+
+Func fncResolucionPantalla1920x1080()
+EndFunc
+
+MsgBox (0,"Acciones","Presiona 1 para iniciar la izquierda. Presiona 2 para pausar el programa. Presiona 3 para inicar a la derecha. Presiona4 para cerrar el programa.")
+ToolTip("1.Izquierda 2.Pausa 3.Derecha 4.Cerrar",753,178,"Pausado",1,1)
+	Sleep(5000)
+	ToolTip("")
+While 1
+	Sleep(100)
+WEnd
+Func fncEmpezarScriptDrc() ;Función de ir hacia la Derecha
+	While 1
+		MouseClick("right",1021,515,1,3000)
+		sleep(700)
+		MouseClick("left",935,427,1,1000)
+		Sleep($idelayRecoleccion)
+
+		MouseClick("right",1021,515,1,3000)
+		sleep(700)
+		MouseClick("left",977,465,1,1000)
+		Sleep($idelayRecoleccion)
+		MouseClick("left",1022,573,1,1000)
+		sleep(1000)
+	WEnd
+EndFunc
+
+Func fncPararScript() ;Función de pausa y comenzar
+	$Script = False
+	ToolTip("Pausado|Presiona 1 o 2 para reanudar el script",753,178,"Pausado",1,1)
+	Sleep(3000)
+	ToolTip("")
+	While 1
+		Sleep(100)
+	WEnd
+EndFunc ;EmpezarScript
+
+Func fncEmpezarScriptIzq() ;Función de ir hacia la Izquierda
+
+	While 1
+		MouseClick("right",1021,515,1,3000)
+		sleep(700)
+		MouseClick("left",935,427,1,1000)
+		Sleep($idelayRecoleccion)
+
+		MouseClick("right",1021,515,1,3000)
+		sleep(700)
+		MouseClick("left",977,465,1,1000)
+		Sleep($idelayRecoleccion)
+		MouseClick("left",906,515,1,1000)
+		sleep(1000)
+	WEnd
+
+EndFunc
+
+Func fncResolucionPantalla1366x768()
+	ToolTip ("prueba",753,178,"prueba",1,1)
+	Sleep(3000)
+	ToolTip("")
+EndFunc
+
+
+Func fncEndProg() ;Función de Parar
+	Exit
+EndFunc
