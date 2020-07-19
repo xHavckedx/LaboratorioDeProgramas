@@ -1,55 +1,258 @@
+#Region
+#AutoIt3Wrapper_Icon=..\Hispanicraft\LOGO2.ico ;Logo del programa.
+#EndRegion
 #cs ---------------------------------------------------------------------------------------------------------------------------------------
 
  AutoIt Version: 3.3.14.5
  Author:xHavkedx
 
- Función del script:Recolector de semillas y ingredientes 1x1(izq)(drch)
+ Función del script:Recolector de semillas y ingredientes 1x1(izq)(drch) y automatización.
 
 #ce ---------------------------------------------------------------------------------------------------------------------------------------
 
-;-----------------------------------------------------------Variables----------------------------------------------------------------------
+;-------------------------------------------------------Paquetes Importados----------------------------------------------------------------
 #include <MsgBoxConstants.au3>
-$bResolucion1920=False;cambia la resolución de 1920 a 1336
-$idelayRecoleccion = 1950;Delay de la recolección de cultivos.
-$scnResolucion = MsgBox(1,"Resolución","Si estas utilizando una resolución de 1920x1080, pulsa aceptar de lo contrario pulsa cancelar.")
+#include <GUIConstantsEx.au3>
+#include <ButtonConstants.au3>
+#include <EditConstants.au3>
+#include <StaticConstants.au3>
+#include <WindowsConstants.au3>
 
-;-----------------------------------------------------------LLamadas------------------------------------------------------------------------
-HotKeySet("{1}","fncEmpezarScriptIzq");Empezar a la izquierda
-HotKeySet("{2}","fncPararScript");Pausar o reanudar programa
-HotKeySet("{3}","fncEmpezarScriptDrc");Empezar a la derecha
-HotKeySet("{4}","fncEndProg");Finalizar el programa
+;-----------------------------------------------------------Variables----------------------------------------------------------------------
+;----------------1920 coordenadas
+$iPosicionX1920 = 1021 ;coordenadas del objeto.
+$iPosicionY1920 = 515
 
-WinActivate("Wakfu")
-ToolTip("Presiona 1 para iniciar la izquierda. Presiona 2 para pausar el programa. Presiona 3 para inicar a la derecha. Presiona4 para cerrar el programa.",300,0,"Acciones",1,0)
+$iSemillaPosicionX1920 = 935  ;coordenadas de la recolección.
+$iSemillaPosicionY1920 = 427
+
+$iObjetoPosicionX1920 = 977   ;coordenadas de la recolección del objeto.
+$iObjetoPosicionY1920 = 465
+;----------------
+
+;----------------1366 coordenadas
+$iPosicionX1366 = 727
+$iPosicionY1366 = 369
+;....Proximamente....
+;----------------
+
+$iCasillasRecolecion = "" ;Numero de casillas el cual recolecta el char.
+$idelayRecoleccion = 1950 ;Delay de la recolección de cultivos.
+
+;-------------------GUI Start Options-------------------------------
+#Region
+$Form1_1 = GUICreate("Recolector", 616, 323, 0, 0)
+$swt1920 = GUICtrlCreateRadio("1920x1080", 32, 40, 113, 17)
+$swt1366 = GUICtrlCreateRadio("1366x768", 32, 72, 113, 17)
+$Label1 = GUICtrlCreateLabel("Elige tu resolución.", 32, 8, 93, 17)
+$Label2 = GUICtrlCreateLabel("Elige la función que quieres realizar, recuerda que para parar el programa tienes que pulsar la tecla F1.", 64, 168, 483, 17)
+$inputCasillas = GUICtrlCreateInput("", 352, 40, 89, 21)
+$Label3 = GUICtrlCreateLabel("Ingresa debajo el numero de casillas a recolectar", 352, 16, 234, 17)
+$BtnIzquierda = GUICtrlCreateButton("Izquierda", 48, 216, 75, 25)
+$BtnDerecha = GUICtrlCreateButton("Derecha", 488, 216, 75, 25)
+$btnAuto = GUICtrlCreateButton("Auto", 264, 272, 75, 25)
+$Label4 = GUICtrlCreateLabel("En Beta", 280, 248, 42, 17)
+$Label5 = GUICtrlCreateLabel("Ingresa debajo el tiempo de recolección en ms", 352, 80, 223, 17)
+$btnEnviarTiempo = GUICtrlCreateButton("Enviar", 488, 104, 75, 25)
+$inputTiempo = GUICtrlCreateInput("", 352, 104, 89, 21)
+GUISetState(@SW_SHOW)
+#EndRegion
+
+;-------------------GUI Advanced Options-------------------------
+#Region
+$Form1_1 = GUICreate("Advanced GUI", 314, 485, 621, 0)
+$GUIAdvancedGroupDo = GUICtrlCreateGroup("1366", 176, 8, 121, 129)
+$GUIXCoordLabelDos = GUICtrlCreateLabel("X coord:", 184, 32, 44, 17)
+$InputXDos = GUICtrlCreateInput("", 184, 48, 73, 21)
+$GUIYCoordLabelDos = GUICtrlCreateLabel("Y coord:", 184, 88, 41, 17)
+$InputYDos = GUICtrlCreateInput("", 184, 104, 73, 21)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$GUIAdvancedGroupUno = GUICtrlCreateGroup("Planta 1920", 16, 8, 121, 129)
+$GUIXCoordLabelUno = GUICtrlCreateLabel("X coord:", 24, 32, 44, 17)
+$InputXUno = GUICtrlCreateInput("", 24, 48, 73, 21)
+$GUIYCoordLabelUno = GUICtrlCreateLabel("Y coord:", 24, 88, 41, 17)
+$InputYUno = GUICtrlCreateInput("", 24, 104, 73, 21)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$btnEnviarAdvanced = GUICtrlCreateButton("Enviar", 120, 440, 75, 25)
+$GUISemilla = GUICtrlCreateGroup("Semilla 1920", 16, 152, 121, 129)
+$GUISemillax = GUICtrlCreateLabel("X coord:", 24, 176, 44, 17)
+$InputXSemilla = GUICtrlCreateInput("", 24, 192, 73, 21)
+$GUISemillaY = GUICtrlCreateLabel("Y coord:", 24, 232, 41, 17)
+$InputYSemilla = GUICtrlCreateInput("", 24, 248, 73, 21)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$GUIObjeto = GUICtrlCreateGroup("Objeto 1920", 16, 296, 121, 129)
+$GUIObjetoX = GUICtrlCreateLabel("X coord:", 24, 320, 44, 17)
+$InputXObjeto = GUICtrlCreateInput("", 24, 336, 73, 21)
+$GUIObjeotY = GUICtrlCreateLabel("Y coord:", 24, 376, 41, 17)
+$InputYObjeto = GUICtrlCreateInput("", 24, 392, 73, 21)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+#EndRegion
+;-----------------------------------------------------------Comandos------------------------------------------------------------------------
+HotKeySet("{F1}","GUIStop");Abre la interfaz Recolector
+HotKeySet("{F2}","GUIAdvanced");Abre la interfaz Avanzada
+
+;-----------------------------------------------------Ejecución del programa----------------------------------------------------------------
+GUIstop() ;Ejecuta el programa
+Func GUIStop() ;Función del programa
+WinActivate("Recolector")
+While 1
+	$nMsg = GUIGetMsg()
+	Switch $nMsg
+		Case $GUI_EVENT_CLOSE
+			Exit 			  ;Cierra el programa cuando se presiona la X de la ventana Recolector.
+		Case $btnEnviarTiempo ;Envia el tiempo en milisegundos para modificar el programa
+			$idelayRecoleccion = GUICtrlRead($inputTiempo)
+			$iCasillasRecolecion = GUICtrlRead($inputCasillas)
+		Case $BtnIzquierda ;Empieza la recoleccion de la izquierda
+			WinActivate("WAKFU")
+			fncEmpezarScriptIzq()
+		Case $BtnDerecha ;Empieza la recolección de la derecha
+			WinActivate("WAKFU")
+			fncEmpezarScriptDrc()
+		Case $btnAuto ;Recolecta automaticamente la cosecha
+			WinActivate("WAKFU")
+			fncAuto()
+	EndSwitch
+WEnd
+EndFunc
 
 While 1
 	Sleep(100)
 WEnd
 
+Func GUIAdvanced() ;Funcion del programa avanzado
+	GUISetState(@SW_SHOW)
+	While 1
+		$nMsg = GUIGetMsg()
+		Switch $nMsg
+			Case $GUI_EVENT_CLOSE
+				GUISetState(@SW_HIDE)
+				ExitLoop
+			Case $btnEnviarAdvanced ;Modifica las coordenadas de (x) y (y).
+				$iPosicionX1920 = GUICtrlRead($InputXUno)
+				$iPosicionY1920 = GUICtrlRead($inputYUno)
+				$iSemillaPosicionX1920 = GUICtrlRead($InputXSemilla)
+				$iSemillaPosicionY1920 = GUICtrlRead($InputYSemilla)
+				$iObjetoPosicionX1920 = GUICtrlRead($InputXObjeto)
+				$iObjetoPosicionY1920 = GUICtrlRead($InputYObjeto)
+		EndSwitch
+	WEnd
+EndFunc
 ;-----------------------------------------------------------Funciones-----------------------------------------------------------------------
+Func fncAuto() ;Función para automatizar la cosecha.
+	WinActivate("WAKFU")
+	While 1
+		If GUICtrlRead($swt1920) = 1 Then ;Ejecuta este segmento si la resolución activada es 1920
+			For $i = 1 to $iCasillasRecolecion step 1 ;movimiento derecha 1920x
+				MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
+				sleep(700)
+				MouseClick("left",$iSemillaPosicionX1920 ,$iSemillaPosicionY1920 ,1,1000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
+				sleep(700)
+				MouseClick("left",$iObjetoPosicionX1920 ,$iObjetoPosicionY1920 ,1,1000)
+
+				Sleep($idelayRecoleccion)
+				MouseClick("left",1022,573,1,1000)
+				sleep(1000)
+			Next
+
+			MouseClick("left",906,515,1,1000); movimiento hacia la izquierda
+				sleep(1000)
+			MouseClick("left",1031,509,1,2000); moviemiento arriba
+				sleep(1000)
+
+			For $i = 1 to $iCasillasRecolecion step 1 ;movimiento izquierda 1920x
+				MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
+				sleep(700)
+				MouseClick("left",$iSemillaPosicionX1920 ,$iSemillaPosicionY1920 ,1,1000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
+				sleep(700)
+				MouseClick("left",$iObjetoPosicionX1920 ,$iObjetoPosicionY1920 ,1,1000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("left",906,515,1,1000)
+				sleep(1000)
+			Next
+
+			MouseClick("left",1022,573,1,1000);moviemiento hacia la derecha
+				sleep(1000)
+			MouseClick("left",1031,509,1,2000); moviemiento arriba
+				Sleep(1000)
+
+		ElseIf GUICtrlRead($swt1366) = 1 Then ;Ejecuta este segmento si la resolución activada es 1366
+
+			MsgBox(0,"Error","Esta operación aún no ha sido programada.")
+			ExitLoop
+			For $i = 1 to $iCasillasRecolecion step 1 ;movimiento derecha 1366x
+				MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
+				sleep(1000)
+				MouseClick("left",644,283,1,2000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
+				sleep(700)
+				MouseClick("left",686,313,1,2000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("left",729,410,1,1000)
+				sleep(1000)
+			Next
+
+			MouseClick("left",641,370,1,1000) ;movimiento izquierda
+			sleep(1000)
+			MouseClick("left",641,370,1,1000) ;movimiento arriba
+			sleep(1000)
+
+			For $i = 1 to $iCasillasRecolecion step 1 ;movimiento izquierda 1366x
+				MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
+				sleep(1000)
+				MouseClick("left",644,283,1,2000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
+				sleep(700)
+				MouseClick("left",686,313,1,2000)
+				Sleep($idelayRecoleccion)
+
+				MouseClick("left",641,370,1,1000)
+				sleep(1000)
+			Next
+
+			MouseClick("left",1022,573,1,1000) ;movimiento derecha
+			sleep(1000)
+			MouseClick("left",1022,573,1,1000) ;movimiento arriba
+			sleep(1000)
+		EndIf
+	WEnd
+EndFunc ;Final de la función cosecha automática
+
 Func fncEmpezarScriptDrc() ;Función de ir hacia la Derecha
 	While 1
-		If $scnResolucion = 1 Then ;Resolución 1920
-			MouseClick("right",1021,515,1,3000)
+		If GUICtrlRead($swt1920) = 1 Then ;Función cosecha derecha Resolución 1920
+			MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
 			sleep(700)
-			MouseClick("left",935,427,1,1000)
+			MouseClick("left",$iSemillaPosicionX1920 ,$iSemillaPosicionY1920 ,1,1000)
 			Sleep($idelayRecoleccion)
 
-			MouseClick("right",1021,515,1,3000)
+			MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
 			sleep(700)
-			MouseClick("left",977,465,1,1000)
+			MouseClick("left",$iObjetoPosicionX1920 ,$iObjetoPosicionY1920 ,1,1000)
 
 			Sleep($idelayRecoleccion)
 			MouseClick("left",1022,573,1,1000)
 			sleep(1000)
 
-		ElseIf $scnResolucion = 2 Then ;Resolución 1333
-			MouseClick("right",727,369,1,4000)
+		ElseIf GUICtrlRead($swt1366) = 1 Then ;Función cosecha derecha Resolución 1333
+			MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
 			sleep(1000)
 			MouseClick("left",644,283,1,2000)
 			Sleep($idelayRecoleccion)
 
-			MouseClick("right",727,369,1,4000)
+			MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
 			sleep(700)
 			MouseClick("left",686,313,1,2000)
 			Sleep($idelayRecoleccion)
@@ -58,39 +261,30 @@ Func fncEmpezarScriptDrc() ;Función de ir hacia la Derecha
 			sleep(1000)
 		EndIf
 	WEnd
-EndFunc
-
-Func fncPararScript() ;Función de pausa y comenzar
-	ToolTip("Pausado|Presiona 1 o 2 para reanudar el script",753,178,"Pausado",1,1)
-	Sleep(3000)
-	ToolTip("")
-	While 1
-		Sleep(100)
-	WEnd
-EndFunc ;EmpezarScript
+EndFunc ;Final de la función cosecha derecha
 
 Func fncEmpezarScriptIzq() ;Función de ir hacia la Izquierda
 	While 1
-		If $scnResolucion = 1 Then ; Resolución 1920
-			MouseClick("right",1021,515,1,3000)
+		If GUICtrlRead($swt1920) = 1 Then ;Función cosecha izquierda Resolución 1920
+			MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
 			sleep(700)
-			MouseClick("left",935,427,1,1000)
+			MouseClick("left",$iSemillaPosicionX1920,$iSemillaPosicionY1920,1,1000)
 			Sleep($idelayRecoleccion)
 
-			MouseClick("right",1021,515,1,3000)
+			MouseClick("right",$iPosicionX1920,$iPosicionY1920,1,3000)
 			sleep(700)
-			MouseClick("left",977,465,1,1000)
+			MouseClick("left",$iObjetoPosicionX1920,$iObjetoPosicionY1920,1,1000)
 			Sleep($idelayRecoleccion)
 
 			MouseClick("left",906,515,1,1000)
 			sleep(1000)
-		ElseIf $scnResolucion = 2 Then ;Resolución 1333
-			MouseClick("right",727,369,1,4000)
+		ElseIf GUICtrlRead($swt1366) = 1 Then ;Función cosecha izquierda Resolución 1333
+			MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
 			sleep(1000)
 			MouseClick("left",644,283,1,2000)
 			Sleep($idelayRecoleccion)
 
-			MouseClick("right",727,369,1,4000)
+			MouseClick("right",$iPosicionX1366,$iPosicionY1366,1,4000)
 			sleep(700)
 			MouseClick("left",686,313,1,2000)
 			Sleep($idelayRecoleccion)
@@ -99,15 +293,4 @@ Func fncEmpezarScriptIzq() ;Función de ir hacia la Izquierda
 			sleep(1000)
 		EndIf
 	WEnd
-EndFunc
-
-Func fncEndProg() ;Función de Parar
-$bSalir = MsgBox(1,"Salir","¿Quieres realmente salir del programa?.")
-		If $bSalir = 2 Then
-			While 1
-				Sleep(100)
-			WEnd
-		ElseIf $bSalir = 1 Then
-			Exit
-		EndIf
-EndFunc
+EndFunc ;Final de la función cosecha izquierda
