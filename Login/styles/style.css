@@ -1,0 +1,22 @@
+*{
+    text-align: center;
+}
+form{
+    height: 94vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form__{
+    display:flex;
+    flex-direction: column;
+    justify-items: center;
+}
+.form__input{
+    margin: 10px;
+    text-align: center;
+}
+.card img{
+    width: 90px;
+    height: 90px;
+}
